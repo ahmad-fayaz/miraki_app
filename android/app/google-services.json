@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "60543119460",
+    "project_id": "miraki-app",
+    "storage_bucket": "miraki-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60543119460:android:54d114062e5f4bafb92f71",
+        "android_client_info": {
+          "package_name": "com.alnaaf.miraki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60543119460-71lccbevohkm2fcliv453tc560n6ovib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrewk_RnD8CNcahhNVWSAJHoZBol4P12c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60543119460-71lccbevohkm2fcliv453tc560n6ovib.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "60543119460-00ukp8qsn9ff3ngujh6ecm4vi985e9qj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alnaaf.vendor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60543119460:android:bb86ed7676cb9e56b92f71",
+        "android_client_info": {
+          "package_name": "com.alnaaf.vendor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60543119460-71lccbevohkm2fcliv453tc560n6ovib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrewk_RnD8CNcahhNVWSAJHoZBol4P12c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60543119460-71lccbevohkm2fcliv453tc560n6ovib.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "60543119460-00ukp8qsn9ff3ngujh6ecm4vi985e9qj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alnaaf.vendor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60543119460:android:e81254cf011bb03cb92f71",
+        "android_client_info": {
+          "package_name": "com.example.miraki_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60543119460-71lccbevohkm2fcliv453tc560n6ovib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrewk_RnD8CNcahhNVWSAJHoZBol4P12c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60543119460-71lccbevohkm2fcliv453tc560n6ovib.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "60543119460-00ukp8qsn9ff3ngujh6ecm4vi985e9qj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alnaaf.vendor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
