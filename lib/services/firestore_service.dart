@@ -2,6 +2,7 @@ import 'package:miraki_app/models/brand_model.dart';
 import 'package:miraki_app/models/class_model.dart';
 import 'package:miraki_app/models/color_model.dart';
 import 'package:miraki_app/models/main_category_model.dart';
+import 'package:miraki_app/models/order_model.dart';
 import 'package:miraki_app/models/product_model.dart';
 import 'package:miraki_app/models/sub_category_model.dart';
 
@@ -43,6 +44,12 @@ class FirestoreService {
           fromFirestore: (snapshot, _) =>
               MainCategory.fromJson(snapshot.data()!),
           toFirestore: (mainCategory, _) => mainCategory.toJson());
+
+  CollectionReference<Order> get ordersRef =>
+      _firestore.collection('orders').withConverter<Order>(
+          fromFirestore: (snapshot, _) =>
+              Order.fromJson(snapshot.data()!),
+          toFirestore: (order, _) => order.toJson());
 
   CollectionReference<Product> get productsRef =>
       _firestore.collection('products').withConverter<Product>(

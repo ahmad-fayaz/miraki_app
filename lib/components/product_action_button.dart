@@ -5,11 +5,13 @@ class ProductActionButton extends StatefulWidget {
   final Color color;
   final Color textColor;
   final String label;
+  final Function() onTap;
   const ProductActionButton(
       {Key? key,
       required this.label,
       this.color = AppColor.primaryColor,
-      this.textColor = AppColor.darkColor})
+      this.textColor = AppColor.darkColor,
+      required this.onTap})
       : super(key: key);
 
   @override
@@ -24,6 +26,7 @@ class _ProductActionButtonState extends State<ProductActionButton> {
       onTapDown: (details) => setState(() => _pressed = true),
       onTapUp: (details) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
+      onTap: () => widget.onTap(),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         curve: Curves.fastOutSlowIn,

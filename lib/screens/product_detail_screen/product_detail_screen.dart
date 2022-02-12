@@ -12,6 +12,7 @@ import 'package:miraki_app/screens/product_detail_screen/widget/color_widget.dar
 import 'package:miraki_app/screens/product_detail_screen/widget/header_widget.dart';
 import 'package:miraki_app/screens/product_detail_screen/widget/varient_widget.dart';
 import 'package:miraki_app/services/currency_service.dart';
+import 'package:miraki_app/services/order_service.dart';
 import 'package:miraki_app/services/price_service.dart';
 import 'package:miraki_app/widgets/rating_star_widget.dart';
 import 'package:provider/provider.dart';
@@ -95,6 +96,7 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
   int _offer = 0;
   int _offerPrice = 0;
   List<VarientDetail> _selectedVarients = [];
+  int _itemQuantity = 1;
 
   @override
   void initState() {
@@ -249,6 +251,7 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                 SliverToBoxAdapter(
                   child: VarientWidget(
                     varientList: widget.varientList,
+                    selectedVarientList: _selectedVarients,
                     onSelectVarient: (selectedVarients) {
                       setState(() {
                         for (VarientDetail varientDetail in _selectedVarients) {
@@ -316,7 +319,7 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                           height: 14.0,
                         ),
                         /* ==============
-                          Product action
+                          Select quantity
                           ============== */
                         Align(
                           alignment: Alignment.topLeft,
@@ -330,7 +333,7 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                                     vertical: 3.0, horizontal: 10.0),
                                 child: DropdownButton<String>(
                                   dropdownColor: const Color(0xFFefefef),
-                                  // value: '${widget.cart.itemQuantity}',
+                                  // value: '$_itemQuantity',
                                   elevation: 0,
                                   isDense: true,
                                   icon: const Icon(
@@ -359,15 +362,18 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                                       ),
                                     );
                                   }).toList(),
-                                  hint: const Text(
-                                    "Quantity: 6",
-                                    style: TextStyle(
+                                  hint: Text(
+                                    "Quantity: $_itemQuantity",
+                                    style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 13,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  onChanged: (value) {},
+                                  onChanged: (value) {
+                                    setState(() =>
+                                        _itemQuantity = int.parse(value!));
+                                  },
                                 ),
                                 decoration: BoxDecoration(
                                     color: AppColor.lightGrey.withOpacity(.1),
@@ -378,15 +384,34 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                             ),
                           ),
                         ),
+                        /* ==============
+                          Product action
+                          ============== */
                         spaceOf16,
-                        const ProductActionButton(
+                        ProductActionButton(
                           label: 'Buy Now',
+                          onTap: () async {
+                            await OrderService.placeNewOrder(
+                                productName: widget.product.productName,
+                                productImage: widget.product.mainImage,
+                                colorName: _selectedColor.colorName,
+                                colorCode: _selectedColor.colorCode,
+                                varients: _selectedVarients,
+                                mainPrice: _mainPrice,
+                                offerPrice: _offerPrice.toDouble(),
+                                quantity: _itemQuantity);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Order placed succussfully')));
+                          },
                         ),
                         spaceOf10,
-                        const ProductActionButton(
+                        ProductActionButton(
                           label: 'Add to Cart',
                           color: AppColor.secondaryColor,
                           textColor: AppColor.light,
+                          onTap: () {},
                         ),
                         spaceOf16,
                         /* ==============

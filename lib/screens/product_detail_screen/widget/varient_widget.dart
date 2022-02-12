@@ -7,29 +7,30 @@ import 'package:miraki_app/models/varient_model.dart';
 class VarientWidget extends StatelessWidget {
   final List<Varient> varientList;
   final Function(List<VarientDetail>) onSelectVarient;
+  final List<VarientDetail> selectedVarientList;
   const VarientWidget(
-      {Key? key, required this.varientList, required this.onSelectVarient})
+      {Key? key, required this.varientList, required this.onSelectVarient, required this.selectedVarientList})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<VarientDetail> _selectedVarientList = [];
     return Column(
       children: [
         ...varientList
             .asMap()
             .map((index, varient) {
-              if (varient.varientList.isNotEmpty) {
-                _selectedVarientList.add(varient.varientList.first);
-                // onSelectVarient(_selectedVarientList);
-              }
               return MapEntry(
                   index,
                   VarientList(
                     varient: varient,
                     onSelected: (varientDetail) {
-                      _selectedVarientList[index] = varientDetail;
-                      onSelectVarient(_selectedVarientList);
+                      selectedVarientList[index] = varientDetail;
+
+                      onSelectVarient(selectedVarientList);
+                      for (VarientDetail varientDetail
+                          in selectedVarientList) {
+                        print('varient ${varientDetail.valueName}');
+                      }
                     },
                   ));
             })
