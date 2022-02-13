@@ -392,13 +392,24 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                           label: 'Buy Now',
                           onTap: () async {
                             await OrderService.placeNewOrder(
+                                productId: widget.product.productId,
+                                mainCategoryName: widget.product.mainCategoryName,
+                                subCategoryName: widget.product.subCategoryName,
+                                className: widget.product.className,
+                                brandName: widget.product.brandName,
+                                capacity: widget.product.capacity,
+                                model: widget.product.model,
+                                productImage: _selectedColor.subImages.first,
                                 productName: widget.product.productName,
-                                productImage: widget.product.mainImage,
+                                productDescription: widget.product.productDescription,
                                 colorName: _selectedColor.colorName,
                                 colorCode: _selectedColor.colorCode,
-                                varients: _selectedVarients,
+                                varients: _selectedVarients.map((e) => e.valueName).toList(),
+                                isOnlinePayment: false,
                                 mainPrice: _mainPrice,
-                                offerPrice: _offerPrice.toDouble(),
+                                offerPrice: _offerPrice,
+                                refundDays: widget.product.refundDays,
+                                gstPercent: widget.product.gstPercent,
                                 quantity: _itemQuantity);
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

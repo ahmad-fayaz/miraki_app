@@ -1,31 +1,31 @@
 class OrderPayment {
-  final String paymentType;
+  final bool isOnlinePayment;
   final num mainPrice;
-  final num mainOff;
+  final num offerPrice;
   final num refundDays;
   final int gstPercent;
 
   OrderPayment({
-    required this.paymentType,
+    required this.isOnlinePayment,
     required this.mainPrice,
-    required this.mainOff,
+    required this.offerPrice,
     required this.refundDays,
     required this.gstPercent,
   });
 
   OrderPayment.fromJson(Map<String, Object?> json)
       : this(
-          paymentType: json['paymentType']! as String,
+          isOnlinePayment: json['isOnlinePayment']! as bool,
           mainPrice: json['mainPrice']! as num,
-          mainOff: json['mainOff']! as num,
+          offerPrice: json['offerPrice']! as num,
           refundDays: json['refundDays']! as num,
           gstPercent: json['gstPercent']! as int,
         );
 
   Map<String, Object?> toJson() => {
-        'paymentType': paymentType,
+        'isOnlinePayment': isOnlinePayment,
         'mainPrice': mainPrice,
-        'mainOff': mainOff,
+        'offerPrice': offerPrice,
         'refundDays': refundDays,
         'gstPercent': gstPercent,
       };

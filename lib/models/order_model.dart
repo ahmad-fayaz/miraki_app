@@ -1,54 +1,42 @@
-import 'package:miraki_app/models/varient_detail_model.dart';
+import 'package:miraki_app/models/order_payment_model.dart';
+import 'package:miraki_app/models/order_product_model.dart';
+import 'package:miraki_app/models/order_user_model.dart';
 
 class Order {
-  final String productName;
-  final String productImage;
-  final String colorName;
-  final String colorCode;
-  final List<VarientDetail> varients;
-  final double mainPrice;
-  final double offerPrice;
+  late String id;
   final int quantity;
-  final String userName;
-  final Map<String, String> address;
+  final OrderProduct product;
+  final OrderPayment payment;
+  final OrderUser user;
+  final bool isNew;
+  final int placedTime;
 
   Order(
-      {required this.productName,
-      required this.productImage,
-      required this.colorName,
-      required this.colorCode,
-      required this.varients,
-      required this.mainPrice,
-      required this.offerPrice,
+      {required this.payment,
+      required this.product,
+      required this.user,
       required this.quantity,
-      this.userName = 'Nabeel Ahmad',
-      this.address = const {'city': 'Mangalore', 'pincode': '574231'}});
+      this.isNew = true,
+      required this.placedTime});
 
   Order.fromJson(Map<String, Object?> json)
       : this(
-            productName: json['productName']! as String,
-            productImage: json['productImage']! as String,
-            colorName: json['colorName']! as String,
-            colorCode: json['colorCode']! as String,
-            varients: (json['varients']! as List<dynamic>)
-                .map((e) => VarientDetail.fromJson(e))
-                .toList(),
-            mainPrice: json['mainPrice']! as double,
-            offerPrice: json['offerPrice']! as double,
-            quantity: json['quantity']! as int,
-            userName: json['userName']! as String,
-            address: json['address']! as Map<String, String>);
+          quantity: json['quantity']! as int,
+          product:
+              OrderProduct.fromJson(json['product']! as Map<String, Object?>),
+          payment:
+              OrderPayment.fromJson(json['payment']! as Map<String, Object?>),
+          user: OrderUser.fromJson(json['user']! as Map<String, Object?>),
+          isNew: json['isNew']! as bool,
+          placedTime: json['placedTime']! as int,
+        );
 
   Map<String, Object?> toJson() => {
-        'productName': productName,
-        'productImage': productImage,
-        'colorName': colorName,
-        'colorCode': colorCode,
-        'varients': varients.map((e) => e.toJson()).toList(),
-        'mainPrice': mainPrice,
-        'offerPrice': offerPrice,
         'quantity': quantity,
-        'userName': userName,
-        'address': address,
+        'product': product.toJson(),
+        'payment': payment.toJson(),
+        'user': user.toJson(),
+        'isNew': isNew,
+        'placedTime': placedTime
       };
 }

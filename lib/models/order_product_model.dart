@@ -6,7 +6,7 @@ class OrderProduct {
   final String brandName;
   final String capacity;
   final String model;
-  final String mainImage;
+  final String productImage;
   final String productName;
   final String productDescription;
   final String colorName;
@@ -21,7 +21,7 @@ class OrderProduct {
     required this.brandName,
     required this.capacity,
     required this.model,
-    required this.mainImage,
+    required this.productImage,
     required this.productName,
     required this.productDescription,
     required this.colorName,
@@ -38,7 +38,7 @@ class OrderProduct {
           brandName: json['brandName']! as String,
           capacity: json['capacity']! as String,
           model: json['model']! as String,
-          mainImage: json['mainImage']! as String,
+          productImage: json['productImage']! as String,
           productName: json['productName']! as String,
           productDescription: json['productDescription']! as String,
           colorName: json['colorName']! as String,
@@ -55,7 +55,7 @@ class OrderProduct {
       'brandName': brandName,
       'capacity': capacity,
       'model': model,
-      'mainImage': mainImage,
+      'productImage': productImage,
       'productName': productName,
       'productDescription': productDescription,
       'colorName': colorName,
