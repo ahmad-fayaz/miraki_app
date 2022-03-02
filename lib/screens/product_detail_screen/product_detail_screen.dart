@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:miraki_app/arguments/product_detail_argument.dart';
+import 'package:miraki_app/components/divider_line.dart';
 import 'package:miraki_app/components/loading_bar.dart';
+import 'package:miraki_app/components/mrp_price.dart';
 import 'package:miraki_app/components/product_action_button.dart';
 import 'package:miraki_app/constants/dimensions.dart';
 import 'package:miraki_app/constants/services.dart';
 import 'package:miraki_app/constants/style.dart';
+import 'package:miraki_app/models/cart_model.dart';
 import 'package:miraki_app/models/color_model.dart';
 import 'package:miraki_app/models/product_model.dart';
 import 'package:miraki_app/models/varient_detail_model.dart';
 import 'package:miraki_app/models/varient_model.dart';
+import 'package:miraki_app/router/router.dart';
 import 'package:miraki_app/screens/product_detail_screen/widget/color_widget.dart';
 import 'package:miraki_app/screens/product_detail_screen/widget/header_widget.dart';
 import 'package:miraki_app/screens/product_detail_screen/widget/varient_widget.dart';
+import 'package:miraki_app/services/cart_service.dart';
 import 'package:miraki_app/services/currency_service.dart';
 import 'package:miraki_app/services/order_service.dart';
 import 'package:miraki_app/services/price_service.dart';
@@ -20,8 +26,8 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductDetailScreen extends StatelessWidget {
-  final String productId;
-  const ProductDetailScreen({Key? key, required this.productId})
+  final ProductDetailArguments arguments;
+  const ProductDetailScreen({Key? key, required this.arguments})
       : super(key: key);
 
   @override
@@ -30,15 +36,15 @@ class ProductDetailScreen extends StatelessWidget {
       providers: [
         StreamProvider<DocumentSnapshot<Product>?>.value(
           initialData: null,
-          value: firestoreService.productsRef.doc(productId).snapshots(),
+          value: firestoreService.productsRef.doc(arguments.productId).snapshots(),
         ),
         StreamProvider<QuerySnapshot<Varient>?>.value(
             value:
-                firestoreService.getProductVarientsRef(productId).snapshots(),
+                firestoreService.getProductVarientsRef(arguments.productId).snapshots(),
             initialData: null),
         StreamProvider<QuerySnapshot<ColorModel>?>.value(
             value: firestoreService
-                .getProductColorsRef(productId)
+                .getProductColorsRef(arguments.productId)
                 .orderBy('isDefaultColor', descending: true)
                 .snapshots(),
             initialData: null)
@@ -67,6 +73,8 @@ class ProductDetailScreen extends StatelessWidget {
           product: _product,
           colorList: _colorList,
           varientList: _varientList,
+          selectedColorName: arguments.selectedColorName,
+          selectedVarientValues: arguments.selectedVarientValues,
         );
       },
     );
@@ -77,11 +85,15 @@ class ProductDetailContainer extends StatefulWidget {
   final Product product;
   final List<ColorModel> colorList;
   final List<Varient> varientList;
+  final String? selectedColorName;
+  final List<String>? selectedVarientValues;
   const ProductDetailContainer(
       {Key? key,
       required this.product,
       required this.colorList,
-      required this.varientList})
+      required this.varientList,
+      this.selectedColorName,
+      this.selectedVarientValues})
       : super(key: key);
 
   @override
@@ -97,17 +109,36 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
   int _offerPrice = 0;
   List<VarientDetail> _selectedVarients = [];
   int _itemQuantity = 1;
+  bool _showFloatingButton = false;
 
   @override
   void initState() {
     _colorList = widget.colorList;
     _selectedColor = _colorList.first;
+    if (widget.selectedColorName != null) {
+      final query = _colorList.where((element) => element.colorName == widget.selectedColorName);
+      if (query.isNotEmpty) {
+        _selectedColor = _colorList.where((element) => element.colorName == widget.selectedColorName).first;
+      }
+    }
     _mainPrice = widget.product.mainPrice.toDouble();
     _offer = widget.product.mainOff.toInt();
     _mainPrice += _selectedColor.colorPriceChange;
     _offer += _selectedColor.colorOfferChange;
     for (Varient varient in widget.varientList) {
-      final varientDetail = varient.varientList.first;
+      VarientDetail varientDetail = varient.varientList.first;
+      if (widget.selectedVarientValues != null) {
+        final query1 = varient.varientList.where((element1) {
+          final query2 =  widget.selectedVarientValues!.where((element2) => element1.valueName == element2);
+          if (query2.isNotEmpty) {
+            return true;
+          }
+          return false;
+        });
+        if (query1.isNotEmpty) {
+          varientDetail = query1.first;
+        }
+      }
       if (varient.varientList.isNotEmpty) {
         _selectedVarients.add(varientDetail);
         _mainPrice += varientDetail.priceChange;
@@ -122,6 +153,9 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: _showFloatingButton ? FloatingActionButton.extended(onPressed: () {
+        Navigator.pushNamed(context, RouteGenerator.cartRoute);
+      }, label: const Text('Go to Cart', style: TextStyle(color: AppColor.light),), backgroundColor: AppColor.accentColor,) : null,
       body: SafeArea(
         child: Stack(
           children: [
@@ -143,7 +177,7 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                     product: widget.product,
                   ),
                 ),
-                _divider,
+                const SliverDividerLine(),
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   sliver: SliverToBoxAdapter(
@@ -178,23 +212,7 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                           ],
                         ),
                         spaceOf8,
-                        RichText(
-                            text: TextSpan(children: [
-                          TextSpan(
-                            text: 'M.R.P.: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: AppColor.darkColor.withOpacity(.5),
-                            ),
-                          ),
-                          TextSpan(
-                            text: getIndianCurrency(_mainPrice),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: AppColor.darkColor.withOpacity(.5),
-                                decoration: TextDecoration.lineThrough),
-                          ),
-                        ])),
+                        MRPPrice(price: _mainPrice),
                         spaceOf8,
                         RichText(
                             text: TextSpan(children: [
@@ -221,10 +239,11 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                     ),
                   ),
                 ),
-                _divider,
+                if (_colorList.length > 1) const SliverDividerLine(),
                 /* ==============
                   Color widget
                   ============== */
+                if (_colorList.length > 1)
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   sliver: SliverToBoxAdapter(
@@ -270,7 +289,7 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                     },
                   ),
                 ),
-                _divider,
+                const SliverDividerLine(),
                 /* ==============
                   Total price
                   ============== */
@@ -393,7 +412,8 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                           onTap: () async {
                             await OrderService.placeNewOrder(
                                 productId: widget.product.productId,
-                                mainCategoryName: widget.product.mainCategoryName,
+                                mainCategoryName:
+                                    widget.product.mainCategoryName,
                                 subCategoryName: widget.product.subCategoryName,
                                 className: widget.product.className,
                                 brandName: widget.product.brandName,
@@ -401,10 +421,13 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                                 model: widget.product.model,
                                 productImage: _selectedColor.subImages.first,
                                 productName: widget.product.productName,
-                                productDescription: widget.product.productDescription,
+                                productDescription:
+                                    widget.product.productDescription,
                                 colorName: _selectedColor.colorName,
                                 colorCode: _selectedColor.colorCode,
-                                varients: _selectedVarients.map((e) => e.valueName).toList(),
+                                varients: _selectedVarients
+                                    .map((e) => e.valueName)
+                                    .toList(),
                                 isOnlinePayment: false,
                                 mainPrice: _mainPrice,
                                 offerPrice: _offerPrice,
@@ -422,7 +445,47 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
                           label: 'Add to Cart',
                           color: AppColor.secondaryColor,
                           textColor: AppColor.light,
-                          onTap: () {},
+                          onTap: () async {
+                            Cart? _cart = await CartService.isExistInCart(productId: widget.product.productId colorName: _selectedColor.colorName, varients: _selectedVarients);
+                            if (_cart != null) {
+                              CartService.updateQuantity(_cart.cartId, _cart.quantity + 1);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Item added to cart')));
+                              return;
+                            }
+                            await CartService.addToCart(
+                                mainCategoryId: widget.product.mainCategoryId,
+                                mainCategoryName:
+                                    widget.product.mainCategoryName,
+                                subCategoryId: widget.product.subCategoryId,
+                                subCategoryName: widget.product.subCategoryName,
+                                classId: widget.product.classId,
+                                className: widget.product.className,
+                                brandId: widget.product.brandId,
+                                brandName: widget.product.brandName,
+                                mainImage: _selectedColor.subImages.first,
+                                productId: widget.product.productId,
+                                productName: widget.product.productName,
+                                productDescription:
+                                    widget.product.productDescription,
+                                colorName: _selectedColor.colorName,
+                                colorCode: _selectedColor.colorCode,
+                                price: _mainPrice,
+                                offer: _offer,
+                                refundDays: widget.product.refundDays.toInt(),
+                                gstPercent: widget.product.gstPercent,
+                                mirakiPercent: widget.product.mirakiPercent,
+                                varients: _selectedVarients
+                                    .map((varient) =>
+                                        '${varient.varientName}: ${varient.valueName}')
+                                    .toList(),
+                                quantity: _itemQuantity);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Item added to cart')));
+                                setState(() {
+                                  _showFloatingButton = true;
+                                });
+                          },
                         ),
                         spaceOf16,
                         /* ==============
@@ -474,19 +537,3 @@ class _ProductDetailContainerState extends State<ProductDetailContainer> {
     );
   }
 }
-
-Widget get _divider => SliverToBoxAdapter(
-      child: Divider(
-        height: 40.0,
-        color: AppColor.lightGrey.withOpacity(.2),
-        thickness: 5.0,
-      ),
-    );
-
-Widget get _thinDivider => SliverToBoxAdapter(
-      child: Divider(
-        height: 40.0,
-        color: AppColor.lightGrey.withOpacity(.2),
-        thickness: 2.0,
-      ),
-    );

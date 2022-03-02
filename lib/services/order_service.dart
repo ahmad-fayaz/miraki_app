@@ -1,3 +1,4 @@
+import 'package:miraki_app/constants/constants.dart';
 import 'package:miraki_app/constants/services.dart';
 import 'package:miraki_app/models/order_model.dart';
 
@@ -62,7 +63,8 @@ class OrderService {
         product: product,
         user: user,
         quantity: quantity,
-        placedTime: DateTime.now().millisecondsSinceEpoch);
+        placedTime: DateTime.now().millisecondsSinceEpoch, 
+        orderStatus: OrderStatus.placed);
 
     return firestoreService.ordersRef.add(order);
   }

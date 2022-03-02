@@ -1,5 +1,5 @@
-class Product {
-  late String productId;
+class Cart {
+  late String cartId;
   final String mainCategoryId;
   final String mainCategoryName;
   final String subCategoryId;
@@ -8,19 +8,21 @@ class Product {
   final String className;
   final String brandId;
   final String brandName;
-  final String capacity;
-  final String model;
   final String mainImage;
+  final String productId;
   final String productName;
   final String productDescription;
-  final num mainPrice;
-  final num mainOff;
+  final String colorName;
+  final String colorCode;
+  final num price;
+  final num offer;
   final num refundDays;
   final int gstPercent;
   final int mirakiPercent;
-  final List<dynamic> specifications;
+  final String varients;
+  final int quantity;
 
-  Product(
+  Cart(
       {required this.mainCategoryId,
       required this.mainCategoryName,
       required this.subCategoryId,
@@ -29,19 +31,21 @@ class Product {
       required this.className,
       required this.brandId,
       required this.brandName,
-      required this.capacity,
-      required this.model,
       required this.mainImage,
+      required this.productId,
       required this.productName,
       required this.productDescription,
-      required this.mainPrice,
-      required this.mainOff,
+      required this.colorName,
+      required this.colorCode,
+      required this.price,
+      required this.offer,
       required this.refundDays,
       required this.gstPercent,
       required this.mirakiPercent,
-      required this.specifications});
+      required this.varients,
+      required this.quantity});
 
-  Product.fromJson(Map<String, Object?> json)
+  Cart.fromJson(Map<String, Object?> json)
       : this(
             mainCategoryId: json['mainCategoryId']! as String,
             mainCategoryName: json['mainCategoryName']! as String,
@@ -51,17 +55,19 @@ class Product {
             className: json['className']! as String,
             brandId: json['brandId']! as String,
             brandName: json['brandName']! as String,
-            capacity: json['capacity']! as String,
-            model: json['model']! as String,
             mainImage: json['mainImage']! as String,
+            productId: json['productId']! as String,
             productName: json['productName']! as String,
             productDescription: json['productDescription']! as String,
-            mainPrice: json['mainPrice']! as num,
-            mainOff: json['mainOff']! as num,
+            colorName: json['colorName']! as String,
+            colorCode: json['colorCode']! as String,
+            price: json['price']! as num,
+            offer: json['offer']! as num,
             refundDays: json['refundDays']! as num,
             gstPercent: json['gstPercent']! as int,
             mirakiPercent: json['mirakiPercent']! as int,
-            specifications: json['specifications']! as List<dynamic>);
+            varients: json['varients']! as String,
+            quantity: json['quantity']! as int);
 
   Map<String, Object?> toJson() {
     return {
@@ -73,72 +79,19 @@ class Product {
       'className': className,
       'brandId': brandId,
       'brandName': brandName,
-      'capacity': capacity,
-      'model': model,
       'mainImage': mainImage,
       'productName': productName,
+      'productId': productId,
       'productDescription': productDescription,
-      'mainPrice': mainPrice,
-      'mainOff': mainOff,
+      'colorName': colorName,
+      'colorCode': colorCode,
+      'price': price,
+      'offer': offer,
       'refundDays': refundDays,
       'gstPercent': gstPercent,
       'mirakiPercent': mirakiPercent,
-      'specifications': specifications,
+      'varients': varients,
+      'quantity': quantity,
     };
   }
-
-  setProductId(String productId) {
-    this.productId = productId;
-  }
 }
-
-// List<Product> productList = [
-//   Product(
-//     imageLink: 'jhewdfjwehdf',
-//     title: 'Adipoli Chair',
-//     desc: 'With 4 legs',
-//     amount: 20,
-//   ),
-//   Product(
-//       imageLink: 'jhewdfjwehdf',
-//       title: 'Fayaz chair',
-//       desc: 'With 4 legs',
-//       amount: 20,
-//   ),
-//   Product(
-//       imageLink: 'jhewdfjwehdf',
-//       title: 'Adipoli Chair',
-//       desc: 'With 4 legs',
-//       amount: 20,
-//   ),
-//   Product(
-//       imageLink: 'jhewdfjwehdf',
-//       title: 'alnaaf Chair',
-//       desc: 'With 4 legs',
-//       amount: 20,
-//   ),
-//   Product(
-//       imageLink: 'jhewdfjwehdf',
-//       title: 'Adipoli Chair',
-//       desc: 'With 4 legs',
-//       amount: 20,
-//   ),
-//   Product(
-//       imageLink: 'jhewdfjwehdf',
-//       title: 'Fayaz chair',
-//       desc: 'With 4 legs',
-//       amount: 20,
-//   ),
-//   Product(
-//       imageLink: 'jhewdfjwehdf',
-//       title: 'Adipoli Chair',
-//       desc: 'With 4 legs',
-//       amount: 20,
-//   ),
-//   Product(
-//       imageLink: 'jhewdfjwehdf',
-//       title: 'alnaaf Chair',
-//       desc: 'With 4 legs',
-//       amount: 20,
-//   ),
-// ];

@@ -46,10 +46,13 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text(
-            widget.product.productName,
-            style: const TextStyle(
-                height: 1.4, fontSize: 16.0, fontWeight: FontWeight.w600),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              widget.product.productName,
+              style: const TextStyle(
+                  height: 1.4, fontSize: 16.0, fontWeight: FontWeight.w600),
+            ),
           ),
         ),
         SizedBox(

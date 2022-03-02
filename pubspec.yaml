@@ -51,6 +51,9 @@ dependencies:
   # Provider
   provider: ^6.0.2
 
+  # More sliver widgets
+  sliver_tools: ^0.2.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
